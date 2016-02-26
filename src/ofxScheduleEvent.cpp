@@ -1,15 +1,23 @@
 #include "ofxScheduleEvent.h"
 
-ofxScheduleEvent::ofxScheduleEvent(int interval) : interval(max(0, interval)) {}
+// destructor
+ofxScheduleEvent::~ofxScheduleEvent() {
+    stopThread();
+    while (isThreadRunning())
+        ;
+}
 
+// add schedule event
 void ofxScheduleEvent::addSchedule(int hour, int minute) { this->addSchedule(hour * 60 + minute); }
 
+// add schedule event
 void ofxScheduleEvent::addSchedule(int minute) {
     if (!isThreadRunning()) {
         this->times.push_back(minute);
     }
 }
 
+// thread main
 void ofxScheduleEvent::threadedFunction() {
     // no times
     if (this->times.size() == 0) {
@@ -18,16 +26,16 @@ void ofxScheduleEvent::threadedFunction() {
 
     this->lastCheckAppExitMin = -1;
     while (isThreadRunning()) {
-        while (isThreadRunning()) {
-            if (lock()) {
-                this->update();
-                unlock();
-                sleep(interval * 1000);
-            }
+        if (lock()) {
+            this->threadedUpdate();
+            unlock();
+            sleep(interval * 1000);
         }
     }
 }
-void ofxScheduleEvent::update() {
+
+// thread update
+void ofxScheduleEvent::threadedUpdate() {
     int exitMin = ofGetHours() * 60 + ofGetMinutes();
     if (this->lastCheckAppExitMin >= 0 && this->lastCheckAppExitMin == exitMin) {
         return;

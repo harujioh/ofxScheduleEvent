@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    ofxScheduleEvent *scheduleEvent = new ofxScheduleEvent(2);
+    scheduleEvent = new ofxScheduleEvent(2);
     scheduleEvent->addSchedule(0, 20);
     scheduleEvent->addSchedule(0, 21);
     scheduleEvent->startThread();
@@ -11,10 +11,12 @@ void ofApp::setup() {
 }
 
 //--------------------------------------------------------------
-void ofApp::onEvent() { ofLogNotice() << "onEvent!!"; }
+void ofApp::exit() { delete scheduleEvent; }
 
 //--------------------------------------------------------------
 void ofApp::update() {}
 
 //--------------------------------------------------------------
 void ofApp::draw() {}
+
+void ofApp::onEvent() { ofLogNotice() << "onEvent!!"; }
