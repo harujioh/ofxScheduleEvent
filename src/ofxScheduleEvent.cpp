@@ -26,12 +26,10 @@ void ofxScheduleEvent::threadedFunction() {
 
     this->lastCheckAppExitMin = -1;
     while (isThreadRunning()) {
-        while (isThreadRunning()) {
-            if (lock()) {
-                this->threadedUpdate();
-                unlock();
-                sleep(interval * 1000);
-            }
+        if (lock()) {
+            this->threadedUpdate();
+            unlock();
+            sleep(interval * 1000);
         }
     }
 }
